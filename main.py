@@ -65,7 +65,22 @@ def login():
     tags=["Users"]
 )
 def show_all_users():
-    pass
+    """
+    This path operation shows all users in the app
+
+    Parameters:
+        -
+
+    Returns a json list with all the users in the app, with the following data:
+        - user_id: UUID
+        - email: EmailStr
+        - first_name: str
+        - last_name: str
+        - birth_date: datetime
+    """
+    with open("users.json", "r+", encoding="utf-8") as f:
+        results = json.load(f)
+        return results
 
 
 @app.get(
