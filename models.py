@@ -7,8 +7,11 @@ from typing import Optional
 from pydantic import BaseModel, Field, EmailStr
 
 
-class UserBase(BaseModel):
+class UserId(BaseModel):
     user_id: UUID = Field(...)  # Universal Unique Identifier
+
+
+class UserBase(UserId):
     email: EmailStr = Field(...)
 
 
@@ -38,9 +41,12 @@ class UserRegister(User, UserLogin):
     pass
 
 
-class Tweet(BaseModel):
-    tweet_id: UUID = Field(...)
+class TweetPost(BaseModel):
     content: str = Field(..., min_length=1, max_length=256)
+    by: UserId = Field(...)
+
+
+class Tweet(TweetPost):
+    tweet_id: UUID = Field(...)
     created_at: datetime = Field(default=datetime.now())
     updated_at: Optional[datetime] = Field()
-    by: User = Field(...)

@@ -1,9 +1,11 @@
 import json
+import uuid
 from typing import List
+from datetime import datetime
 
 from fastapi import FastAPI, status, Body
 
-from models import User, Tweet, UserRegister
+from models import User, Tweet, TweetPost, UserRegister
 
 app = FastAPI()
 
@@ -135,8 +137,40 @@ def home():
     summary="Post a tweet",
     tags=["Tweets"]
 )
-def post():
-    pass
+def post(tweet: TweetPost = Body(...)):
+    """
+    Post a tweet
+
+    This path operation post a tweet in the app
+
+    Parameters:
+        - Request body parameter
+            - tweet: Tweet
+
+    Returns a json with the basic tweet information:
+        - tweet_id: UUID
+        - content: str
+        - created_at: datetime
+        - updated_at: Optional[str]
+        - by: User
+    """
+    with open("tweets.json", "r+", encoding="utf-8") as f:
+        results = json.load(f)
+        tweet_dict = tweet.dict()
+        tweet_dict["tweet_id"] = str(uuid.uuid4())
+        tweet_dict["created_at"] = str(datetime.now())
+        tweet_dict["by"]["user_id"] = str(tweet_dict["by"]["user_id"])
+        results.append(tweet_dict)
+        print(results)
+        f.seek(0)
+        json.dump(results, f)
+        tweet = Tweet(
+            content=tweet_dict["content"],
+            by=tweet_dict["by"],
+            tweet_id=tweet_dict["tweet_id"],
+            created_at=tweet_dict["created_at"]
+        )
+        return tweet
 
 
 @app.get(
