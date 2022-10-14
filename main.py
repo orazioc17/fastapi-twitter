@@ -1,8 +1,9 @@
+import json
 from typing import List
 
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, Body
 
-from models import User, Tweet
+from models import User, Tweet, UserRegister
 
 app = FastAPI()
 
@@ -17,7 +18,7 @@ app = FastAPI()
     summary="Register new User",
     tags=["Users"]
 )
-def signup():
+def signup(user: UserRegister = Body(...)):  # El Body indica que es un body parameter
     """
     Signup
 
@@ -32,9 +33,17 @@ def signup():
         - email: EmailStr
         - first_name: str
         - last_name: str
-        - birth_date: datetime.date
+        - birth_date: datetime
     """
-    pass
+    with open("users.json", "r+", encoding="utf-8") as f:
+        results = json.load(f)
+        user_dict = user.dict()
+        user_dict["user_id"] = str(user_dict["user_id"])
+        user_dict["birth_date"] = str(user_dict["birth_date"])
+        results.append(user_dict)
+        f.seek(0)
+        json.dump(results, f)
+        return user
 
 
 @app.post(
