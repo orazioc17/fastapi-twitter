@@ -2,16 +2,12 @@ from typing import List
 
 from fastapi import FastAPI, status
 
-from models import User
+from models import User, Tweet
 
 app = FastAPI()
 
 
 # Path operations
-@app.get(path="/")
-def home():
-    return {"Twitter API": "Working!"}
-
 
 # Users
 @app.post(
@@ -79,4 +75,58 @@ def delete_user():
 def update_user():
     pass
 
+
 # Tweets
+@app.get(
+    path="/",
+    response_model=List[Tweet],
+    status_code=status.HTTP_200_OK,
+    summary="Shows all tweets",
+    tags=["Tweets"]
+)
+def home():
+    return {"Twitter API": "Working!"}
+
+
+@app.post(
+    path="/tweet",
+    response_model=Tweet,
+    status_code=status.HTTP_201_CREATED,
+    summary="Post a tweet",
+    tags=["Tweets"]
+)
+def post():
+    pass
+
+
+@app.get(
+    path="/tweet/{tweet_id}",
+    response_model=Tweet,
+    status_code=status.HTTP_200_OK,
+    summary="Get a tweet",
+    tags=["Tweets"]
+)
+def get_tweet():
+    pass
+
+
+@app.delete(
+    path="/tweet/{tweet_id}",
+    response_model=Tweet,
+    status_code=status.HTTP_200_OK,
+    summary="Delete a tweet",
+    tags=["Tweets"]
+)
+def delete_tweet():
+    pass
+
+
+@app.put(
+    path="/tweet/{tweet_id}",
+    response_model=Tweet,
+    status_code=status.HTTP_200_OK,
+    summary="Update a tweet",
+    tags=["Tweets"]
+)
+def update_tweet():
+    pass
